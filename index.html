@@ -111,18 +111,31 @@
 
         .game-container {
             text-align: center;
-            padding: 20px;
+            padding: 15px 10px;
             max-width: 600px;
             width: 100%;
             display: none;
+            overflow-x: hidden;
         }
 
         .game-container.active {
             display: block;
         }
 
+        @media (max-width: 480px) {
+            .game-container {
+                padding: 10px 8px;
+            }
+        }
+
         .header {
             margin-bottom: 30px;
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                margin-bottom: 15px;
+            }
         }
 
         .level-display {
@@ -133,10 +146,34 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
+        @media (max-width: 480px) {
+            .level-display {
+                font-size: 1.5em;
+            }
+        }
+
         .instructions {
             font-size: 0.9em;
             color: #aaa;
             margin-top: 10px;
+        }
+
+        @media (max-width: 480px) {
+            .instructions {
+                font-size: 0.75em;
+            }
+        }
+
+        .moves-counter {
+            font-size: 1.2em;
+            color: #aaa;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 480px) {
+            .moves-counter {
+                font-size: 1em;
+            }
         }
 
         .tubes-container {
@@ -146,37 +183,121 @@
             gap: 15px;
             margin: 30px 0;
             min-height: 350px;
+            padding: 0 5px;
+        }
+
+        @media (max-width: 480px) {
+            .tubes-container {
+                gap: 10px;
+                margin: 20px 0;
+                min-height: 200px;
+                padding: 0 2px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .tubes-container {
+                gap: 8px;
+            }
         }
 
         .tube {
             width: 60px;
             height: 220px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 0 0 20px 20px;
+            background: linear-gradient(to right, 
+                rgba(255, 255, 255, 0.15) 0%, 
+                rgba(255, 255, 255, 0.05) 20%, 
+                rgba(255, 255, 255, 0.03) 50%, 
+                rgba(255, 255, 255, 0.08) 80%, 
+                rgba(255, 255, 255, 0.2) 100%);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 0 0 25px 25px;
             position: relative;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                        box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        filter 0.3s ease;
             display: flex;
             flex-direction: column-reverse;
             overflow: hidden;
             touch-action: manipulation;
+            box-shadow: 
+                inset -2px 0 8px rgba(255, 255, 255, 0.3),
+                inset 2px 0 8px rgba(0, 0, 0, 0.2),
+                0 8px 16px rgba(0, 0, 0, 0.3),
+                0 4px 8px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .tube::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 15%;
+            width: 25%;
+            height: 100%;
+            background: linear-gradient(to right, 
+                rgba(255, 255, 255, 0.4) 0%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                transparent 100%);
+            border-radius: 0 0 0 25px;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .tube::after {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            height: 20px;
+            background: linear-gradient(to bottom, 
+                rgba(255, 255, 255, 0.25) 0%, 
+                rgba(255, 255, 255, 0.15) 50%, 
+                rgba(255, 255, 255, 0.08) 100%);
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            box-shadow: 
+                inset -1px 0 4px rgba(255, 255, 255, 0.3),
+                inset 1px 0 4px rgba(0, 0, 0, 0.2),
+                0 -2px 8px rgba(0, 0, 0, 0.2);
+            pointer-events: none;
         }
 
         .tube:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+            transform: translateY(-8px);
+            box-shadow: 
+                inset -2px 0 12px rgba(255, 255, 255, 0.4),
+                inset 2px 0 12px rgba(0, 0, 0, 0.3),
+                0 12px 32px rgba(255, 255, 255, 0.15),
+                0 8px 16px rgba(0, 0, 0, 0.3);
+            filter: brightness(1.1);
         }
 
         .tube.selected {
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
-            transform: scale(1.05);
+            box-shadow: 
+                inset -2px 0 12px rgba(255, 215, 0, 0.3),
+                inset 2px 0 12px rgba(255, 215, 0, 0.2),
+                0 0 30px rgba(255, 215, 0, 0.9),
+                0 0 15px rgba(255, 215, 0, 0.6),
+                0 8px 24px rgba(0, 0, 0, 0.4);
+            transform: translateY(-8px) scale(1.05);
+            border-color: rgba(255, 215, 0, 0.6);
+            filter: brightness(1.15);
         }
 
         @media (max-width: 768px) {
             .tube {
                 width: 50px;
                 height: 180px;
+            }
+
+            .tube::after {
+                top: -12px;
+                height: 16px;
             }
         }
 
@@ -185,12 +306,46 @@
                 width: 45px;
                 height: 160px;
             }
+
+            .tube::after {
+                top: -10px;
+                height: 14px;
+            }
         }
 
         .liquid {
             width: 100%;
             height: 25%;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .liquid::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 35%;
+            height: 100%;
+            background: linear-gradient(to right, 
+                rgba(255, 255, 255, 0.4) 0%, 
+                rgba(255, 255, 255, 0.15) 50%, 
+                transparent 100%);
+            pointer-events: none;
+        }
+
+        .liquid::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 25%;
+            height: 100%;
+            background: linear-gradient(to left, 
+                rgba(0, 0, 0, 0.15) 0%, 
+                transparent 100%);
+            pointer-events: none;
         }
 
         .controls {
@@ -301,12 +456,6 @@
             }
         }
 
-        .moves-counter {
-            font-size: 1.2em;
-            color: #aaa;
-            margin-top: 10px;
-        }
-
         .level-select-screen {
             display: none;
             position: fixed;
@@ -316,20 +465,27 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.95);
             z-index: 1000;
-            justify-content: center;
-            align-items: center;
             overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
         }
 
         .level-select-screen.show {
-            display: flex;
+            display: block;
         }
 
         .level-select-content {
             text-align: center;
-            padding: 40px 20px;
+            padding: 20px 15px;
             max-width: 800px;
             width: 100%;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding-top: max(env(safe-area-inset-top), 20px);
+            padding-bottom: max(env(safe-area-inset-bottom), 20px);
         }
 
         .level-select-content h2 {
@@ -368,27 +524,27 @@
 
         @media (max-width: 768px) {
             .level-select-content {
-                padding: 20px 15px;
+                padding: 15px 12px;
             }
 
             .level-select-content h2 {
-                font-size: 2em;
+                font-size: 1.8em;
                 margin-bottom: 8px;
             }
 
             .progress-text {
-                font-size: 1em;
-                margin-bottom: 20px;
+                font-size: 0.95em;
+                margin-bottom: 15px;
             }
 
             .levels-grid {
-                grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
-                gap: 12px;
-                margin-bottom: 20px;
+                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+                gap: 10px;
+                margin-bottom: 15px;
             }
 
             .level-button {
-                font-size: 1.3em;
+                font-size: 1.2em;
                 border-radius: 12px;
             }
         }
@@ -396,6 +552,7 @@
         @media (max-width: 480px) {
             .level-select-content {
                 padding: 15px 10px;
+                padding-top: max(env(safe-area-inset-top), 15px);
             }
 
             .level-select-content h2 {
@@ -404,27 +561,50 @@
             }
 
             .progress-text {
-                font-size: 0.9em;
-                margin-bottom: 15px;
+                font-size: 0.85em;
+                margin-bottom: 12px;
             }
 
             .levels-grid {
-                grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
-                gap: 10px;
+                grid-template-columns: repeat(5, 1fr);
+                gap: 8px;
                 margin-bottom: 15px;
             }
 
             .level-button {
-                font-size: 1.1em;
+                font-size: 1em;
                 border-radius: 10px;
+                min-height: 50px;
             }
 
             .level-button .checkmark {
-                font-size: 0.7em;
+                font-size: 0.6em;
+                top: 2px;
+                right: 2px;
             }
 
             .level-button .lock {
-                font-size: 1em;
+                font-size: 0.9em;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .level-select-content h2 {
+                font-size: 1.3em;
+            }
+
+            .progress-text {
+                font-size: 0.8em;
+            }
+
+            .levels-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 6px;
+            }
+
+            .level-button {
+                font-size: 0.9em;
+                min-height: 45px;
             }
         }
 
@@ -479,12 +659,14 @@
         .close-button {
             background: rgba(255, 255, 255, 0.1);
             padding: 10px 30px;
+            margin-top: 15px;
         }
 
         @media (max-width: 480px) {
             .close-button {
                 padding: 10px 25px;
                 font-size: 0.9em;
+                margin-top: 10px;
             }
         }
 
@@ -602,8 +784,30 @@
             }
 
             generateLevel() {
-                const numColors = Math.min(3 + Math.floor(this.level / 3), 6);
-                const numTubes = numColors + 2;
+                let numColors;
+                let emptyTubes;
+                
+                if (this.level <= 6) {
+                    numColors = 3;
+                    emptyTubes = 2;
+                } else if (this.level <= 14) {
+                    numColors = 4;
+                    emptyTubes = 2;
+                } else if (this.level <= 24) {
+                    numColors = 5;
+                    emptyTubes = 2;
+                } else if (this.level <= 35) {
+                    numColors = 6;
+                    emptyTubes = 2;
+                } else if (this.level <= 43) {
+                    numColors = 6;
+                    emptyTubes = 1;
+                } else {
+                    numColors = 6;
+                    emptyTubes = 1;
+                }
+                
+                const numTubes = numColors + emptyTubes;
                 
                 this.tubes = [];
                 const colors = COLORS.slice(0, numColors);
@@ -624,7 +828,7 @@
                     this.tubes.push(allLiquids.splice(0, 4));
                 }
                 
-                for (let i = 0; i < 2; i++) {
+                for (let i = 0; i < emptyTubes; i++) {
                     this.tubes.push([]);
                 }
                 
@@ -758,7 +962,7 @@
                 const grid = document.getElementById('levelsGrid');
                 grid.innerHTML = '';
                 
-                const totalLevels = Math.max(20, this.maxLevelReached + 5);
+                const totalLevels = Math.max(50, this.maxLevelReached + 5);
                 
                 for (let i = 1; i <= totalLevels; i++) {
                     const btn = document.createElement('div');
