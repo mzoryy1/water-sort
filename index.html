@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="preload" as="image" href="attached_assets/Gemini_Generated_Image_gqgsb5gqgsb5gqgs_1759722696867.png">
+    <title>Color Sort Puzzle</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1a1a2e;
+            background-image: linear-gradient(135deg, rgba(26, 26, 46, 0.95) 0%, rgba(22, 33, 62, 0.95) 100%),
+                              url('attached_assets/Gemini_Generated_Image_gqgsb5gqgsb5gqgs_1759722696867.png');
+            background-size: auto, cover;
+            background-position: center, center;
+            background-repeat: no-repeat, no-repeat;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            overflow-x: hidden;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                background-attachment: scroll;
+            }
+        }
+
+        .home-screen {
+            display: flex;
+            text-align: center;
+            padding: 40px;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .home-screen.hidden {
+            display: none;
+        }
+
+        .game-title {
+            font-size: 3.5em;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 2.5em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-title {
+                font-size: 2em;
+            }
+        }
+
+        .home-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .home-button {
+            padding: 20px 60px;
+            font-size: 1.5em;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            min-width: 250px;
+            touch-action: manipulation;
+        }
+
+        .home-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
+        }
+
+        .home-button:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 480px) {
+            .home-button {
+                padding: 15px 40px;
+                font-size: 1.2em;
+                min-width: 200px;
+            }
+        }
+
+        .game-container {
+            text-align: center;
+            padding: 20px;
+            max-width: 600px;
+            width: 100%;
+            display: none;
+        }
+
+        .game-container.active {
+            display: block;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .level-display {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .instructions {
+            font-size: 0.9em;
+            color: #aaa;
+            margin-top: 10px;
+        }
+
+        .tubes-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            min-height: 350px;
+        }
+
+        .tube {
+            width: 60px;
+            height: 220px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0 0 20px 20px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column-reverse;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        .tube:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+        }
+
+        .tube.selected {
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .tube {
+                width: 50px;
+                height: 180px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tube {
+                width: 45px;
+                height: 160px;
+            }
+        }
+
+        .liquid {
+            width: 100%;
+            height: 25%;
+            transition: all 0.3s ease;
+        }
+
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 1em;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            touch-action: manipulation;
+            min-height: 44px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 480px) {
+            button {
+                padding: 10px 20px;
+                font-size: 0.95em;
+            }
+        }
+
+        .win-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .win-screen.show {
+            display: flex;
+        }
+
+        .win-content {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .win-content h2 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #ffd700;
+        }
+
+        .win-content p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 480px) {
+            .win-content {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+
+            .win-content h2 {
+                font-size: 2em;
+                margin-bottom: 15px;
+            }
+
+            .win-content p {
+                font-size: 1em;
+                margin-bottom: 20px;
+            }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #f0f;
+            animation: confetti-fall 3s linear;
+            z-index: 999;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .moves-counter {
+            font-size: 1.2em;
+            color: #aaa;
+            margin-top: 10px;
+        }
+
+        .level-select-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+        }
+
+        .level-select-screen.show {
+            display: flex;
+        }
+
+        .level-select-content {
+            text-align: center;
+            padding: 40px 20px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .level-select-content h2 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #ffd700;
+        }
+
+        .progress-text {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            color: #aaa;
+        }
+
+        .levels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .level-button {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            touch-action: manipulation;
+        }
+
+        @media (max-width: 768px) {
+            .level-select-content {
+                padding: 20px 15px;
+            }
+
+            .level-select-content h2 {
+                font-size: 2em;
+                margin-bottom: 8px;
+            }
+
+            .progress-text {
+                font-size: 1em;
+                margin-bottom: 20px;
+            }
+
+            .levels-grid {
+                grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+
+            .level-button {
+                font-size: 1.3em;
+                border-radius: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .level-select-content {
+                padding: 15px 10px;
+            }
+
+            .level-select-content h2 {
+                font-size: 1.5em;
+                margin-bottom: 5px;
+            }
+
+            .progress-text {
+                font-size: 0.9em;
+                margin-bottom: 15px;
+            }
+
+            .levels-grid {
+                grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+
+            .level-button {
+                font-size: 1.1em;
+                border-radius: 10px;
+            }
+
+            .level-button .checkmark {
+                font-size: 0.7em;
+            }
+
+            .level-button .lock {
+                font-size: 1em;
+            }
+        }
+
+        .level-button.completed {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .level-button.current {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        .level-button.locked {
+            background: rgba(100, 100, 100, 0.3);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .level-button.completed:hover,
+        .level-button.current:hover {
+            transform: scale(1.1);
+        }
+
+        .level-button.locked:hover {
+            transform: none;
+        }
+
+        .level-button .checkmark {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 0.8em;
+            color: #fff;
+        }
+
+        .level-button .lock {
+            position: absolute;
+            font-size: 1.2em;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+            }
+            50% {
+                box-shadow: 0 4px 30px rgba(245, 158, 11, 0.8);
+            }
+        }
+
+        .close-button {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 30px;
+        }
+
+        @media (max-width: 480px) {
+            .close-button {
+                padding: 10px 25px;
+                font-size: 0.9em;
+            }
+        }
+
+        .back-button {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            margin-bottom: 10px;
+        }
+
+        .locked-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #ef4444;
+            color: white;
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 1.2em;
+            z-index: 1100;
+            box-shadow: 0 10px 40px rgba(239, 68, 68, 0.5);
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+            25% { transform: translate(-50%, -50%) rotate(-5deg); }
+            75% { transform: translate(-50%, -50%) rotate(5deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="home-screen" id="homeScreen">
+        <h1 class="game-title">Color Sort Puzzle</h1>
+        <div class="home-buttons">
+            <button class="home-button" onclick="game.startGame()">Play</button>
+            <button class="home-button" onclick="game.showLevelSelectFromHome()">Select Level</button>
+        </div>
+    </div>
+
+    <div class="game-container" id="gameContainer">
+        <button class="back-button" onclick="game.goHome()">← Back to Home</button>
+        <div class="header">
+            <div class="level-display">LEVEL <span id="levelNum">1</span></div>
+            <div class="moves-counter">Moves: <span id="moves">0</span></div>
+            <div class="instructions">Tap to Pour - Sort all colors into separate tubes!</div>
+        </div>
+
+        <div class="tubes-container" id="tubesContainer"></div>
+
+    </div>
+
+    <div class="win-screen" id="winScreen">
+        <div class="win-content">
+            <h2>🎉 Perfect! 🎉</h2>
+            <p>You completed the level!</p>
+            <button onclick="game.continueToNextLevel()">Continue</button>
+            <button onclick="game.restart()" style="margin-left: 10px;">Replay</button>
+        </div>
+    </div>
+
+    <div class="level-select-screen" id="levelSelectScreen">
+        <div class="level-select-content">
+            <h2>Select Level</h2>
+            <p class="progress-text">Completed: <span id="completedCount">0</span> levels</p>
+            <div class="levels-grid" id="levelsGrid"></div>
+            <button class="close-button" onclick="game.hideLevelSelect()">Close</button>
+        </div>
+    </div>
+
+    <div class="locked-message" id="lockedMessage">
+        Please complete the previous level first!
+    </div>
+
+    <script>
+        const COLORS = ['#FF3366', '#3366FF', '#33FF66', '#FFFF33', '#FF33FF', '#FF9933'];
+        
+        class Game {
+            constructor() {
+                this.level = 1;
+                this.tubes = [];
+                this.selectedTube = null;
+                this.moves = 0;
+                this.completedLevels = this.loadCompletedLevels();
+                this.maxLevelReached = Math.max(...this.completedLevels, 0) + 1;
+            }
+
+            loadCompletedLevels() {
+                const saved = localStorage.getItem('colorSortCompleted');
+                return saved ? JSON.parse(saved) : [];
+            }
+
+            saveCompletedLevel(level) {
+                if (!this.completedLevels.includes(level)) {
+                    this.completedLevels.push(level);
+                    this.completedLevels.sort((a, b) => a - b);
+                    localStorage.setItem('colorSortCompleted', JSON.stringify(this.completedLevels));
+                    this.maxLevelReached = Math.max(...this.completedLevels, 0) + 1;
+                }
+            }
+
+            startGame() {
+                document.getElementById('homeScreen').classList.add('hidden');
+                document.getElementById('gameContainer').classList.add('active');
+                this.level = this.maxLevelReached;
+                this.generateLevel();
+                this.render();
+                this.updateDisplay();
+            }
+
+            goHome() {
+                document.getElementById('homeScreen').classList.remove('hidden');
+                document.getElementById('gameContainer').classList.remove('active');
+            }
+
+            generateLevel() {
+                const numColors = Math.min(3 + Math.floor(this.level / 3), 6);
+                const numTubes = numColors + 2;
+                
+                this.tubes = [];
+                const colors = COLORS.slice(0, numColors);
+                
+                const allLiquids = [];
+                colors.forEach(color => {
+                    for (let i = 0; i < 4; i++) {
+                        allLiquids.push(color);
+                    }
+                });
+                
+                for (let i = allLiquids.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [allLiquids[i], allLiquids[j]] = [allLiquids[j], allLiquids[i]];
+                }
+                
+                for (let i = 0; i < numColors; i++) {
+                    this.tubes.push(allLiquids.splice(0, 4));
+                }
+                
+                for (let i = 0; i < 2; i++) {
+                    this.tubes.push([]);
+                }
+                
+                this.selectedTube = null;
+                this.moves = 0;
+            }
+
+            render() {
+                const container = document.getElementById('tubesContainer');
+                container.innerHTML = '';
+                
+                this.tubes.forEach((tube, index) => {
+                    const tubeDiv = document.createElement('div');
+                    tubeDiv.className = 'tube';
+                    tubeDiv.onclick = () => this.selectTube(index);
+                    
+                    tube.forEach(color => {
+                        const liquid = document.createElement('div');
+                        liquid.className = 'liquid';
+                        liquid.style.backgroundColor = color;
+                        tubeDiv.appendChild(liquid);
+                    });
+                    
+                    container.appendChild(tubeDiv);
+                });
+            }
+
+            selectTube(index) {
+                if (this.selectedTube === null) {
+                    if (this.tubes[index].length > 0) {
+                        this.selectedTube = index;
+                        document.querySelectorAll('.tube')[index].classList.add('selected');
+                    }
+                } else {
+                    if (this.selectedTube === index) {
+                        document.querySelectorAll('.tube')[index].classList.remove('selected');
+                        this.selectedTube = null;
+                    } else {
+                        if (this.canPour(this.selectedTube, index)) {
+                            this.pour(this.selectedTube, index);
+                            document.querySelectorAll('.tube')[this.selectedTube].classList.remove('selected');
+                            this.selectedTube = null;
+                            this.moves++;
+                            this.updateDisplay();
+                            this.render();
+                            
+                            setTimeout(() => {
+                                if (this.checkWin()) {
+                                    this.showWin();
+                                }
+                            }, 300);
+                        } else {
+                            document.querySelectorAll('.tube')[this.selectedTube].classList.remove('selected');
+                            this.selectedTube = null;
+                        }
+                    }
+                }
+            }
+
+            canPour(from, to) {
+                if (this.tubes[from].length === 0) return false;
+                if (this.tubes[to].length === 4) return false;
+                if (this.tubes[to].length === 0) return true;
+                
+                const fromColor = this.tubes[from][this.tubes[from].length - 1];
+                const toColor = this.tubes[to][this.tubes[to].length - 1];
+                
+                return fromColor === toColor;
+            }
+
+            pour(from, to) {
+                const color = this.tubes[from][this.tubes[from].length - 1];
+                
+                while (this.tubes[from].length > 0 && 
+                       this.tubes[from][this.tubes[from].length - 1] === color &&
+                       this.tubes[to].length < 4) {
+                    this.tubes[to].push(this.tubes[from].pop());
+                }
+            }
+
+            checkWin() {
+                for (let tube of this.tubes) {
+                    if (tube.length === 0) continue;
+                    if (tube.length !== 4) return false;
+                    const firstColor = tube[0];
+                    if (!tube.every(color => color === firstColor)) return false;
+                }
+                return true;
+            }
+
+            showWin() {
+                this.saveCompletedLevel(this.level);
+                const winScreen = document.getElementById('winScreen');
+                winScreen.classList.add('show');
+                
+                for (let i = 0; i < 50; i++) {
+                    setTimeout(() => {
+                        const confetti = document.createElement('div');
+                        confetti.className = 'confetti';
+                        confetti.style.left = Math.random() * 100 + '%';
+                        confetti.style.background = COLORS[Math.floor(Math.random() * COLORS.length)];
+                        confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                        document.body.appendChild(confetti);
+                        
+                        setTimeout(() => confetti.remove(), 3000);
+                    }, i * 30);
+                }
+            }
+
+            continueToNextLevel() {
+                document.getElementById('winScreen').classList.remove('show');
+                this.level++;
+                this.generateLevel();
+                this.render();
+                this.updateDisplay();
+            }
+
+            restart() {
+                document.getElementById('winScreen').classList.remove('show');
+                this.generateLevel();
+                this.render();
+                this.updateDisplay();
+            }
+
+            showLevelSelectFromHome() {
+                this.showLevelSelect();
+            }
+
+            showLevelSelect() {
+                const screen = document.getElementById('levelSelectScreen');
+                const grid = document.getElementById('levelsGrid');
+                grid.innerHTML = '';
+                
+                const totalLevels = Math.max(20, this.maxLevelReached + 5);
+                
+                for (let i = 1; i <= totalLevels; i++) {
+                    const btn = document.createElement('div');
+                    btn.className = 'level-button';
+                    
+                    if (this.completedLevels.includes(i)) {
+                        btn.classList.add('completed');
+                        btn.innerHTML = `${i}<span class="checkmark">✓</span>`;
+                        btn.onclick = () => this.selectLevel(i);
+                    } else if (i === this.maxLevelReached) {
+                        btn.classList.add('current');
+                        btn.innerHTML = `${i}`;
+                        btn.onclick = () => this.selectLevel(i);
+                    } else {
+                        btn.classList.add('locked');
+                        btn.innerHTML = `<span class="lock">🔒</span>${i}`;
+                        btn.onclick = () => this.showLockedMessage();
+                    }
+                    
+                    grid.appendChild(btn);
+                }
+                
+                document.getElementById('completedCount').textContent = this.completedLevels.length;
+                screen.classList.add('show');
+            }
+
+            hideLevelSelect() {
+                document.getElementById('levelSelectScreen').classList.remove('show');
+            }
+
+            selectLevel(levelNum) {
+                this.level = levelNum;
+                this.hideLevelSelect();
+                
+                if (document.getElementById('homeScreen').classList.contains('hidden')) {
+                    this.generateLevel();
+                    this.render();
+                    this.updateDisplay();
+                } else {
+                    this.startGame();
+                    this.level = levelNum;
+                    this.generateLevel();
+                    this.render();
+                    this.updateDisplay();
+                }
+            }
+
+            showLockedMessage() {
+                const msg = document.getElementById('lockedMessage');
+                msg.style.display = 'block';
+                setTimeout(() => {
+                    msg.style.display = 'none';
+                }, 2000);
+            }
+
+            updateDisplay() {
+                document.getElementById('levelNum').textContent = this.level;
+                document.getElementById('moves').textContent = this.moves;
+            }
+        }
+
+        const game = new Game();
+    </script>
+</body>
+</html>
